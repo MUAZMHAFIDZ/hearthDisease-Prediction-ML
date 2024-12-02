@@ -1,7 +1,7 @@
 # Import library
 import pandas as pd  # Untuk pengolahan data dalam bentuk tabel
 import streamlit as st  # Untuk membuat antarmuka web yang interaktif
-#import matplotlib.pyplot as plt  # Untuk membuat grafik visualisasi
+# import matplotlib.pyplot as plt  # Untuk membuat grafik visualisasi
 from matplotlib import pyplot as plt
 import pickle  # Untuk memuat model yang sudah dilatih sebelumnya
 from sklearn.tree import plot_tree  # Untuk menggambar pohon keputusan
