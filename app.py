@@ -52,9 +52,6 @@ if menu == 'Beranda':
     Pilih menu di **sebelah kiri** dan mulailah perjalanan Anda untuk memahami lebih jauh tentang kesehatan jantung!  
     """)
     st.success("🌟 Hidup Sehat Dimulai dari Langkah Kecil Hari Ini!")
-    st.write("Selamat datang di web Kami!")
-    st.write("Aplikasi ini memungkinkan Anda untuk menjelajahi data terkait penyakit jantung.")
-    st.write("Silakan pilih menu di sebelah kiri untuk melihat konten yang tersedia.")
 
 # Menu Dataset
 elif menu == 'Dataset':
