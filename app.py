@@ -106,7 +106,7 @@ elif menu == 'Grafik':
 
 # Menu Prediksi
 elif menu == 'Prediksi':
-    st.subheader("Prediksi Penyakit Jantung")
+    st.subheader("Prediksi Penyakit Jantung dengan Decision Tree")
 
     # Preprocessing dataset
     # Encode kolom 'Sex' dan ubah kategori lain menjadi dummy variables
@@ -119,7 +119,6 @@ elif menu == 'Prediksi':
     y = df['HeartDisease']
 
     # Form input data baru di Streamlit
-    st.title("Prediksi Penyakit Jantung dengan Decision Tree")
     st.header("Input Data Baru")
     age = st.number_input("Age", min_value=1, max_value=120, value=40)
     sex = st.selectbox("Sex", options=['M', 'F'])
