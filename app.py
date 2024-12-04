@@ -9,6 +9,7 @@ from sklearn.preprocessing import LabelEncoder  # Untuk mengonversi data kategor
 
 # Load image
 # Membaca file gambar yang akan ditampilkan di halaman beranda
+icon = plt.imread('heart-attack.png')
 img = plt.imread('jantungg.jpg')
 
 # Load dataset
@@ -31,6 +32,7 @@ st.markdown(
 
 # Left sidebar
 # Sidebar untuk navigasi menu
+st.sidebar.image(icon, width=100)
 menu = st.sidebar.selectbox("Pilih Konten", ['Beranda', 'Dataset', 'Grafik', 'Prediksi'])
 
 # Menu Beranda
@@ -118,19 +120,21 @@ elif menu == 'Prediksi':
     X = df.drop('HeartDisease', axis=1)
     y = df['HeartDisease']
 
-    # Form input data baru di Streamlit
     st.header("Input Data Baru")
-    age = st.number_input("Age", min_value=1, max_value=120, value=40)
-    sex = st.selectbox("Sex", options=['M', 'F'])
-    chest_pain_type = st.selectbox("Chest Pain Type", options=['ATA', 'NAP', 'ASY', 'TA'])
-    resting_bp = st.number_input("RestingBP", min_value=50, max_value=200, value=120)
-    cholesterol = st.number_input("Cholesterol", min_value=100, max_value=600, value=200)
-    fasting_bs = st.selectbox("FastingBS", options=[0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
-    resting_ecg = st.selectbox("RestingECG", options=['Normal', 'ST', 'LVH'])
-    max_hr = st.number_input("MaxHR", min_value=50, max_value=250, value=150)
-    exercise_angina = st.selectbox("Exercise Angina", options=['Y', 'N'])
-    oldpeak = st.number_input("Oldpeak", min_value=0.0, max_value=10.0, value=1.0)
-    st_slope = st.selectbox("ST_Slope", options=['Up', 'Flat', 'Down'])
+    col1, col2 = st.columns([3, 1])
+    # Form input data baru di Streamlit
+    with col1:
+        age = st.number_input("Age", min_value=1, max_value=120, value=40)
+        sex = st.selectbox("Sex", options=['M', 'F'])
+        chest_pain_type = st.selectbox("Chest Pain Type", options=['ATA', 'NAP', 'ASY', 'TA'])
+        resting_bp = st.number_input("RestingBP", min_value=50, max_value=200, value=120)
+        cholesterol = st.number_input("Cholesterol", min_value=100, max_value=600, value=200)
+        fasting_bs = st.selectbox("FastingBS", options=[0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
+        resting_ecg = st.selectbox("RestingECG", options=['Normal', 'ST', 'LVH'])
+        max_hr = st.number_input("MaxHR", min_value=50, max_value=250, value=150)
+        exercise_angina = st.selectbox("Exercise Angina", options=['Y', 'N'])
+        oldpeak = st.number_input("Oldpeak", min_value=0.0, max_value=10.0, value=1.0)
+        st_slope = st.selectbox("ST_Slope", options=['Up', 'Flat', 'Down'])
 
     # Data baru diubah ke dalam bentuk DataFrame
     data_baru = {
@@ -154,7 +158,18 @@ elif menu == 'Prediksi':
     df_baru = df_baru.reindex(columns=X.columns, fill_value=0)
 
     # Prediksi
-    if st.button("Prediksi"):
-        prediksi = model.predict(df_baru)
-        hasil = "Pasien mengalami Risiko Penyakit Jantung" if prediksi[0] == 1 else "Pasien tidak Mengalami Risiko Penyakit Jantung"
-        st.subheader(f"Hasil Prediksi: {hasil}")
+    with col2:
+        if st.button("Prediksi"):
+            prediksi = model.predict(df_baru)
+            if prediksi[0] == 1:
+                iconic = plt.imread('medical.png')
+                hasil = "Pasien mengalami Risiko Penyakit Jantung"
+                color = "#8B0000"  # Merah untuk risiko tinggi
+            else:
+                iconic = plt.imread('healthy.png')
+                hasil = "Pasien tidak Mengalami Risiko Penyakit Jantung"
+                color = "green"  # Hijau untuk tidak ada risiko
+
+            # Menampilkan hasil dengan warna yang sesuai
+            st.image(iconic, width=150)
+            st.markdown(f'<h4 style="color:{color};">{hasil}</h4>', unsafe_allow_html=True)
