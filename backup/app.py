@@ -1,53 +1,49 @@
 # Import library
-import pandas as pd
-import streamlit as st
-from streamlit_option_menu import option_menu
+import pandas as pd  # Untuk pengolahan data dalam bentuk tabel
+import streamlit as st  # Untuk membuat antarmuka web yang interaktif
+# import matplotlib.pyplot as plt  # Untuk membuat grafik visualisasi
 from matplotlib import pyplot as plt
-import pickle
-from sklearn.preprocessing import LabelEncoder
-from sklearn.tree import export_graphviz
-from graphviz import Source
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+import pickle  # Untuk memuat model yang sudah dilatih sebelumnya
+from sklearn.tree import plot_tree  # Untuk menggambar pohon keputusan
+from sklearn.preprocessing import LabelEncoder  # Untuk mengonversi data kategori menjadi angka
 
 # Load image
+# Membaca file gambar yang akan ditampilkan di halaman beranda
 icon = plt.imread('heart-attack.png')
 img = plt.imread('jantungg.jpg')
 
 # Load dataset
+# Membaca dataset penyakit jantung dari file CSV
 df = pd.read_csv('heart.csv')
 
 # Load pre-trained model
+# Membuka model yang sudah dilatih sebelumnya dari file .sav
 model = pickle.load(open('model_prediksi_gagal_jantung.sav', 'rb'))
 
-# Sidebar interaktif dengan option_menu
-with st.sidebar:
-    selected = option_menu(
-        menu_title="Pilih Menu",
-        options=["Beranda", "Dataset", "Grafik", "Prediksi", "Tentang Kami"],
-        icons=["house", "table", "bar-chart", "activity", "person-circle"],
-        menu_icon="cast",
-        default_index=0,
-        styles={
-            "container": {"padding": "5px", "background-color": "#f8f9fa"},
-            "icon": {"color": "#E195AB", "font-size": "18px"},
-            "nav-link": {
-                "font-size": "15px",
-                "text-align": "left",
-                "margin": "0px",
-                "--hover-color": "#e8f4fd",
-            },
-            "nav-link-selected": {"background-color": "#87A2FF", "color": "white"},
-            "menu-title": {"color": "black", "font-size": "16px", "text-align": "center", "margin-bottom": "10px"},
-        },
-    )
+# Streamlit interface
+# Membuat judul aplikasi web
+# st.title("Ayo kita prediksi Penyakit Jantung!")
+st.markdown(
+    """
+    <h1 style="text-align: center; color: black;">Aplikasi Prediksi Penyakit Jantung</h1>
+    """,
+    unsafe_allow_html=True
+)
 
-# Menu Beranda
-if selected == "Beranda":
+# Left sidebar
+# Sidebar untuk navigasi menu
+st.sidebar.image(icon, width=100)
+menu = st.sidebar.selectbox("Pilih Konten", ['Beranda', 'Dataset', 'Grafik', 'Prediksi'])
+
+if menu == 'Beranda':
+    st.image(img, caption='Gambar Jantung', use_container_width=True)
+    
+    # Menambahkan selamat datang dan penjelasan aplikasi
     st.markdown("""
     # **Selamat Datang di Aplikasi Prediksi Penyakit Jantung!**
-    🔬 **Aplikasi ini menggunakan teknologi Machine Learning untuk memprediksi risiko penyakit jantung berdasarkan data kesehatan Anda.** """)
-    st.image(img, caption='Gambar Jantung', use_container_width=True)
-    (""" ### 🤖 Teknologi yang Digunakan:
+    🔬 **Aplikasi ini menggunakan teknologi Machine Learning untuk memprediksi risiko penyakit jantung berdasarkan data kesehatan Anda.**
+    
+    ### 🤖 Teknologi yang Digunakan:
     - **Decision Tree**: Algoritma pohon keputusan yang digunakan untuk menentukan apakah seseorang berisiko terkena penyakit jantung berdasarkan fitur yang ada.
     - **Alasan**:    
         - **Mudah Dipahami**: Hasil prediksi berupa aturan yang jelas, memudahkan interpretasi oleh tenaga medis.
@@ -83,16 +79,21 @@ if selected == "Beranda":
     """)
 
 # Menu Dataset
-elif selected == "Dataset":
+elif menu == 'Dataset':
     st.subheader("Dataset Penyakit Jantung")
+    # Menampilkan seluruh dataset
     st.write(df)
+
     st.subheader("Analisis Deskriptif")
+    # Menampilkan ringkasan statistik dataset
     st.write(df.describe())
+    # Menampilkan jumlah masing-masing jenis nyeri dada
     st.write(df['ChestPainType'].value_counts())
 
 # Menu Grafik
-elif selected == "Grafik":
+elif menu == 'Grafik':
     st.subheader("Visualisasi Data")
+    
     # Histogram distribusi usia
     fig, ax = plt.subplots(figsize=(12, 8))
     ax.hist(df['Age'], bins=20, color='skyblue', edgecolor='black', alpha=0.7)
@@ -102,8 +103,34 @@ elif selected == "Grafik":
     ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
     st.pyplot(fig)
 
+    # Scatter plot usia vs kolesterol
+    fig, ax = plt.subplots(figsize=(12, 8))
+    scatter = ax.scatter(
+        df['Age'], df['Cholesterol'], 
+        c=df['Cholesterol'], cmap='viridis', alpha=0.7, edgecolor='k'
+    )
+    ax.set_xlabel('Usia', fontsize=14)
+    ax.set_ylabel('Kolesterol', fontsize=14)
+    ax.set_title('Hubungan Usia dan Kolesterol', fontsize=16, fontweight='bold')
+    ax.grid(color='gray', linestyle='--', linewidth=0.5, alpha=0.7)
+
+    # Tambahkan colorbar untuk menunjukkan intensitas kolesterol
+    cbar = plt.colorbar(scatter, ax=ax)
+    cbar.set_label('Level Kolesterol', fontsize=12)
+    st.pyplot(fig)
+
+    # diagram pengidap penyakit jantung tiap usia
+    plt.figure(figsize=(8, 4))
+    plt.plot(df['Age'], df['HeartDisease'], label="Penyakit Jantung Di Tiap Usia")
+    plt.title("Penyakit Jantung Di Tiap Usia")
+    plt.xlabel("Usia")
+    plt.ylabel("Penyakit Jantung")
+    plt.legend()
+    st.pyplot(plt)
+    
+
 # Menu Prediksi
-elif selected == 'Prediksi':
+elif menu == 'Prediksi':
     st.subheader("Prediksi Penyakit Jantung dengan Decision Tree")
 
     # Preprocessing dataset
@@ -119,18 +146,18 @@ elif selected == 'Prediksi':
     st.header("Input Data Baru")
     col1, col2 = st.columns([3, 1])
     # Form input data baru di Streamlit
-    st.header("Input Data Baru")
-    age = st.number_input("Age || Umur ", min_value=1, max_value=120, help="Umurmu brp?")
-    sex = st.selectbox("Sex || Jenis Kelamin", options=['M', 'F'], help="Hanya menerima 2 gender")
-    chest_pain_type = st.selectbox("Chest Pain Type || Tipe Nyeri Dada", options=['ATA (Atypical Angina)', 'NAP (Non-Anginal Pain)', 'ASY (Asymptomatic)', 'TA (Typical Angina)'])
-    resting_bp = st.number_input("Resting Blood Pressure || Tekanan darah saat istirahat ", min_value=50, max_value=200, help="min 50, max : 200")
-    cholesterol = st.number_input("Cholesterol || Kolesterol", min_value=100, max_value=600, help="min 100, max 600")
-    fasting_bs = st.selectbox("Fasting Blood Sugar || Gula Darah Puasa", options=[0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
-    resting_ecg = st.selectbox("Resting Electrocardiographic || Elektrokardiograpik saat istirahat", options=['Normal', 'ST', 'LVH'], help="Hasil elektrokardiogram (EKG) yang diambil saat pasien dalam keadaan istirahat")
-    max_hr = st.number_input("Max Heart Rate || Denyut Jantung Maksimum", min_value=50, max_value=250, help="Denyut jantung tertinggi yang tercatat saat pasien beraktivitas" )
-    exercise_angina = st.selectbox("Exercise Angina || Angina yang Dihasilkan oleh Olahraga", options=['Y', 'N'],help=" Apakah pasien mengalami nyeri dada saat berolahraga")
-    oldpeak = st.number_input("Oldpeak", min_value=0.0, max_value=10.0, value=1.0, help="Mengukur perubahan segmen ST setelah beraktivitas (lebih banyak penurunan menunjukkan lebih tinggi risiko masalah jantung)")
-    st_slope = st.selectbox("ST_Slope", options=['Up', 'Flat', 'Down'], help= "Mengukur kemiringan segmen ST setelah beraktivitas (downsloping menunjukkan kemungkinan penyakit jantung yang lebih serius, upslope biasanya normal).")
+    with col1:
+        age = st.number_input("Age", min_value=1, max_value=120, value=40)
+        sex = st.selectbox("Sex", options=['M', 'F'])
+        chest_pain_type = st.selectbox("Chest Pain Type", options=['ATA', 'NAP', 'ASY', 'TA'])
+        resting_bp = st.number_input("RestingBP", min_value=50, max_value=200, value=120)
+        cholesterol = st.number_input("Cholesterol", min_value=100, max_value=600, value=200)
+        fasting_bs = st.selectbox("FastingBS", options=[0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
+        resting_ecg = st.selectbox("RestingECG", options=['Normal', 'ST', 'LVH'])
+        max_hr = st.number_input("MaxHR", min_value=50, max_value=250, value=150)
+        exercise_angina = st.selectbox("Exercise Angina", options=['Y', 'N'])
+        oldpeak = st.number_input("Oldpeak", min_value=0.0, max_value=10.0, value=1.0)
+        st_slope = st.selectbox("ST_Slope", options=['Up', 'Flat', 'Down'])
 
     # Data baru diubah ke dalam bentuk DataFrame
     data_baru = {
@@ -169,26 +196,3 @@ elif selected == 'Prediksi':
             # Menampilkan hasil dengan warna yang sesuai
             st.image(iconic, width=150)
             st.markdown(f'<h4 style="color:{color};">{hasil}</h4>', unsafe_allow_html=True)
-
-    # Visualisasi pohon keputusan
-    if st.checkbox("Tampilkan Struktur Pohon Keputusan"):
-        tree_rules = export_graphviz(
-            model, 
-            out_file=None, 
-            feature_names=X.columns, 
-            class_names=['Tidak Berisiko', 'Berisiko'], 
-            filled=True, 
-            rounded=True, 
-            special_characters=True
-        )
-        st.graphviz_chart(tree_rules)
-
-# Menu About Us
-elif selected == "Tentang Kami":
-    st.subheader("Tentang Kami")
-    st.markdown("""
-    ## **Tim Pengembang**
-    Kami adalah tim yang berdedikasi dalam mengembangkan aplikasi berbasis machine learning untuk memprediksi risiko penyakit jantung.
-    ### **Kontak Kami**
-    - 📧 Email: support@prediksijantung.com
-    """)
