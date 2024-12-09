@@ -31,7 +31,7 @@ st.markdown(
 
 # Left sidebar
 # Sidebar untuk navigasi menu
-menu = st.sidebar.selectbox("Pilih Konten", ['Beranda', 'Dataset', 'Grafik', 'Prediksi'])
+menu = st.sidebar.selectbox("Pilih Konten", ['Beranda', 'Dataset', 'Grafik', 'Prediksi', 'Cara Kerja'])
 
 # Menu Beranda
 if menu == 'Beranda':
@@ -158,6 +158,45 @@ elif menu == 'Prediksi':
         prediksi = model.predict(df_baru)
         hasil = "Pasien mengalami Risiko Penyakit Jantung" if prediksi[0] == 1 else "Pasien tidak Mengalami Risiko Penyakit Jantung"
         st.subheader(f"Hasil Prediksi: {hasil}")
+elif menu == 'Cara Kerja':
+    st.image ("decision_tree_plot.jpg", caption="ini if else nya decision tree", use_container_width=True)
+    # # Define the path to the image
+    # image_path = 'decision_tree_plot.jpg'
+
+    # # Define the HTML hyperlink with the image
+    # html_string = f'<a href="{image_path}" target="_blank"><img src="{image_path}" width="200" caption="ini if else nya decision tree"></a>'
+
+    # # Display the image using `st.markdown`
+    # st.markdown(html_string, unsafe_allow_html=True)
+
+    st.info("Penjelasan")
+
+    # Teks yang akan ditampilkan di dalam kotak
+    teks = """Ambil contoh ya.
+    Teks ini hanya untuk dibaca dan tidak bisa diedit."""
+
+    # Membuat kotak seperti textarea
+    st.markdown(
+        f"""
+        <div style="
+            border: 1px solid gray;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            color: black;
+            font-family: monospace;
+            white-space: pre-wrap; /* Supaya line break terlihat */
+            overflow-x: auto; /* Untuk teks panjang agar bisa di-scroll horizontal */
+        ">
+            {teks}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+
+
 
 
 
