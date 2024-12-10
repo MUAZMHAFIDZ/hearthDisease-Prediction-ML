@@ -92,6 +92,19 @@ elif selected == "Dataset":
     st.write(df.describe())
     st.write(df['ChestPainType'].value_counts())
 
+     # Penjelasan tipe nyeri dada
+    st.subheader("Penjelasan Tipe Nyeri Dada (ChestPainType)")
+
+    chest_pain_explanation = """
+    - **ASY (Asymptomatic)**: Tidak ada gejala nyeri dada yang dirasakan meskipun ada masalah jantung. Sering ditemukan pada pasien dengan penyakit jantung tanpa tanda-tanda khas.
+    - **NAP (Non-Anginal Pain)**: Nyeri dada yang tidak terkait dengan angina atau penyakit jantung iskemik. Biasanya disebabkan oleh faktor non-kardiovaskular seperti masalah otot atau lambung.
+    - **ATA (Atypical Angina)**: Nyeri dada yang tidak memiliki karakteristik khas angina (seperti nyeri tekan di dada). Gejalanya bisa berupa ketidaknyamanan umum atau sesak napas.
+    - **TA (Typical Angina)**: Nyeri dada khas akibat angina, biasanya berupa nyeri atau tekanan di dada yang sering menjalar ke lengan, leher, atau rahang, diperburuk oleh aktivitas fisik dan mereda dengan istirahat atau nitrogliserin.
+    """
+
+    # Tampilkan penjelasan dalam format markdown
+    st.markdown(chest_pain_explanation)
+
 # Menu Grafik
 elif selected == "Grafik":
     st.subheader("Visualisasi Data")
