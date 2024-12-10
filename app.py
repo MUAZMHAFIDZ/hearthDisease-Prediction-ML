@@ -92,7 +92,7 @@ elif selected == "Dataset":
     st.write(df.describe())
     st.write(df['ChestPainType'].value_counts())
 
-     # Penjelasan tipe nyeri dada
+    # Penjelasan tipe nyeri dada
     st.subheader("Penjelasan Tipe Nyeri Dada (ChestPainType)")
 
     chest_pain_explanation = """
@@ -144,6 +144,15 @@ elif selected == "Grafik":
     cbar = plt.colorbar(scatter, ax=ax)
     cbar.set_label('Level Kolesterol', fontsize=12)
     st.pyplot(fig)
+
+    # diagram pengidap penyakit jantung tiap usia
+    plt.figure(figsize=(8, 4))
+    plt.plot(df['Age'], df['HeartDisease'], label="Penyakit Jantung Di Tiap Usia")
+    plt.title("Penyakit Jantung Di Tiap Usia")
+    plt.xlabel("Usia")
+    plt.ylabel("Penyakit Jantung")
+    plt.legend()
+    st.pyplot(plt)
 
 # Prediction Menu
 elif selected == 'Prediksi':
