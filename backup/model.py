@@ -4,9 +4,6 @@ import pickle  # Dipakai untuk menyimpan model yang sudah dilatih
 from sklearn.tree import DecisionTreeClassifier  # Algoritma pohon keputusan untuk membuat model
 from sklearn.model_selection import train_test_split  # Untuk membagi data menjadi training dan testing
 from sklearn.preprocessing import LabelEncoder  # Untuk mengubah data kategori menjadi angka
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from sklearn import tree
-from matplotlib import pyplot as plt
 
 # Load dataset
 # Membaca file CSV yang berisi data penyakit jantung dan menyimpannya dalam dataframe
@@ -35,15 +32,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_
 # Membuat dan melatih model
 # Menggunakan algoritma Decision Tree untuk membuat model prediksi
 # Model dilatih dengan data training (X_train dan y_train)
-model = DecisionTreeClassifier()
+model = DecisionTreeClassifier(random_state=50)
 model.fit(X_train, y_train)
-
-y_pred = model.predict(X_test)
-
-print(f"Akurasi: {accuracy_score(y_test, y_pred) * 100:.2f}%")
-print(f"Precision: {precision_score(y_test, y_pred):.2f}")
-print(f"Recall: {recall_score(y_test, y_pred):.2f}")
-print(f"F1-Score: {f1_score(y_test, y_pred):.2f}")
 
 # Menyimpan model ke file .sav
 # Model yang sudah dilatih disimpan dalam file dengan nama 'model_prediksi_gagal_jantung.sav'
@@ -52,9 +42,3 @@ with open('model_prediksi_gagal_jantung.sav', 'wb') as file:
     pickle.dump(model, file)
 
 print("Model berhasil disimpan sebagai model_prediksi_gagal_jantung.sav")
-
-plt.figure(figsize=(30,24))
-tree.plot_tree(model, fontsize=16, rounded=True, filled= True)
-
-plt.savefig("decision_tree_plot.jpg", format="jpg", dpi=300)  # Resolusi lebih tinggi
-print("Gambar berhasil disimpan sebagai 'decision_tree_plot.jpg'")
