@@ -134,21 +134,20 @@ elif selected == 'Prediksi':
     X = df.drop('HeartDisease', axis=1)
     y = df['HeartDisease']
 
-    st.header("Enter New Data")
+    st.header("Input Data Baru")
 
     # Input form
-    age = st.number_input("Age", min_value=1, max_value=120, value=40)
-    sex = st.selectbox("Sex", options=['M', 'F'])
-    chest_pain_type = st.selectbox("Chest Pain Type", options=['ATA', 'NAP', 'ASY', 'TA'])
-    resting_bp = st.number_input("RestingBP (mmHg)", min_value=50, max_value=200, value=120)
-    cholesterol = st.number_input("Cholesterol (mg/dL)", min_value=100, max_value=600, value=200)
-    fasting_bs = st.selectbox("Fasting Blood Sugar > 120 mg/dL", options=[0, 1], 
-    format_func=lambda x: 'Yes' if x == 1 else 'No')
-    resting_ecg = st.selectbox("RestingECG", options=['Normal', 'ST', 'LVH'])
-    max_hr = st.number_input("MaxHR", min_value=50, max_value=250, value=150)
-    exercise_angina = st.selectbox("Exercise Angina", options=['Y', 'N'])
-    oldpeak = st.number_input("Oldpeak (ST depression)", min_value=0.0, max_value=10.0, value=1.0)
-    st_slope = st.selectbox("ST_Slope", options=['Up', 'Flat', 'Down'])
+    age = st.number_input("Age || Umur", min_value=1, max_value=120, value=40, help="Umurmu brp?")
+    sex = st.selectbox("Sex || Jenis Kelamin", options=['M', 'F'],help="Hanya menerima 2 gender" )
+    chest_pain_type = st.selectbox("Chest Pain Type || Tipe Nyeri Dada", options=['ATA', 'NAP', 'ASY', 'TA'],help="ATA = Atypical Angina, 'NAP = Non-Anginal Pain, ASY = Asymptomatic, TA = Typical Angina" )
+    resting_bp = st.number_input("Resting Blood Pressure || Tekanan darah saat istirahat (mmHg)", min_value=50, max_value=200, value=120, help="min 50, max : 200")
+    cholesterol = st.number_input("Cholesterol || Kolesterol (mg/dL)", min_value=100, max_value=600, value=200, help="min 100, max 600")
+    fasting_bs = st.selectbox("Fasting Blood Sugar || Gula Darah Puasa > 120 mg/dL", options=[0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
+    resting_ecg = st.selectbox("Resting Electrocardiographic || Elektrokardiograpik saat istirahat", options=['Normal', 'ST', 'LVH'],help="Hasil elektrokardiogram (EKG) yang diambil saat pasien dalam keadaan istirahat")
+    max_hr = st.number_input("Max Heart Rate || Denyut Jantung Maksimum", min_value=50, max_value=250, value=150, help="Denyut jantung tertinggi yang tercatat saat pasien beraktivitas")
+    exercise_angina = st.selectbox("Exercise Angina || Angina yang Dihasilkan oleh Olahraga", options=['Y', 'N'],help=" Apakah pasien mengalami nyeri dada saat berolahraga")
+    oldpeak = st.number_input("Oldpeak (ST depression)", min_value=0.0, max_value=10.0, value=1.0, help="Mengukur perubahan segmen ST setelah beraktivitas (lebih banyak penurunan menunjukkan lebih tinggi risiko masalah jantung)")
+    st_slope = st.selectbox("ST_Slope", options=['Up', 'Flat', 'Down'], help= "Mengukur kemiringan segmen ST setelah beraktivitas (downsloping menunjukkan kemungkinan penyakit jantung yang lebih serius, upslope biasanya normal).")
 
     # Create a DataFrame for the new data
     new_data = {
@@ -176,11 +175,11 @@ elif selected == 'Prediksi':
         prediction = model.predict(new_df)
         if prediction[0] == 1:
             image = plt.imread('medical.png')
-            result = "The patient is at risk of Heart Disease"
+            result = "Pasien ada resiko gagal jantung"
             color = "#8B0000"  # Red for high risk
         else:
             image = plt.imread('healthy.png')
-            result = "The patient is not at risk of Heart Disease"
+            result = "Pasien aman sehat sentosa"
             color = "green"  # Green for low risk
 
         # Display the result with appropriate color and image
@@ -202,6 +201,7 @@ elif selected == 'Prediksi':
     #    st.graphviz_chart(tree_rules)
 
 elif selected == 'Cara Kerja':
+    st.header ("Cara Kerja Decision Tree")
     st.image ("decision_tree_plot.jpg", caption="ini if else nya decision tree", use_container_width=True)
     # # Define the path to the image
     # image_path = 'decision_tree_plot.jpg'
@@ -213,10 +213,45 @@ elif selected == 'Cara Kerja':
     # st.markdown(html_string, unsafe_allow_html=True)
 
     st.info("Penjelasan")
+    st.subheader("Rumus Gini Index")
+    st.latex(r'''
+    Gini = 1 - \sum_{i=1}^{n} \left( \frac{count_i}{total\_samples} \right)^2
+    ''')
 
     # Teks yang akan ditampilkan di dalam kotak
-    teks = """Ambil contoh ya.
-    Teks ini hanya untuk dibaca dan tidak bisa diedit."""
+    teks = """
+    Ambil contoh tree level 1 bagian True, tertera seperti ini :
+    x[7] <= 0.5
+    gini = 0.291
+    samples = 476
+    value = [84, 392]
+    
+    Penjelasannya per baris adalah
+    x[7] <= 0.5 artinya kolom ke 8 (mulai dari 0) yaitu MaxHR, lalu di ambil nilai tengahnya di 0.5
+    gini = 0.291 artinya tingkat impurity (kotor) / purity (bersih), semakin mendekati angka 0 maka semakin bersih
+    samples = 476, artinya data yang digunakan, namun sudah di filter pada level 0
+    value = [84, 392] artinya dalam 476 sample sebanyak 84 data bilang tidak kena penyakit jantung (False), dan sebanyak 392 data kena gagal jantung (True)
+
+    cara ngitung gini sesuai dengan rumus di atas
+    diketahui samples nya 476, data sakitnya 84/476 dan data sehat 329/476
+    hasil pembagian adalah 
+    sakit : 84/476 = 0.1764705882352941
+    sehat : 329/476 = 0.8235294117647059
+    kemudian di pangkat 2 dapet hasilnya
+    sakit = 0.03114186851211072041522491349481 +
+    sehat = 0.67820069204152252041522491349481 = 0.70934256055363324083044982698962
+    hasilnya 0.29065743944636675916955017301038
+    bulatkan jadi 0.291
+    jadi Gini = 0.29065743944636675916955017301038 atau 0.291
+
+
+
+    pada level 0
+    x[18] artinya mungkin ada penambahan kolom saat proses ml berlangsung seperti hot encoding yang di chest type 
+    samples yang digunakan hanya 826 namun dataset ada 918 hal ini memang di karenakan test_size di model.py yang menunjukan 10%
+    918 di kali 10/100 hasilnya 91,8 atau 92, jadi data yang digunakan untuk pengetesan adalah 92 sedangkan data untuk training 
+    yaitu 918 - 92 = 826 yaitu samples pada level 0
+    """
 
     # Membuat kotak seperti textarea
     st.markdown(
@@ -232,7 +267,7 @@ elif selected == 'Cara Kerja':
             overflow-x: auto; /* Untuk teks panjang agar bisa di-scroll horizontal */
         ">
             {teks}
-        </div>
+        
         """,
         unsafe_allow_html=True,
     )
