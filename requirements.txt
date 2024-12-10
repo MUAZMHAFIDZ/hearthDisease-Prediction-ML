@@ -3,3 +3,4 @@ streamlit
 matplotlib
 scikit-learn==1.5.2
 streamlit_option_menu
+graphviz
