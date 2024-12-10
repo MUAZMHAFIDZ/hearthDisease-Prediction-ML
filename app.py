@@ -101,9 +101,21 @@ elif selected == "Dataset":
     - **ATA (Atypical Angina)**: Nyeri dada yang tidak memiliki karakteristik khas angina (seperti nyeri tekan di dada). Gejalanya bisa berupa ketidaknyamanan umum atau sesak napas.
     - **TA (Typical Angina)**: Nyeri dada khas akibat angina, biasanya berupa nyeri atau tekanan di dada yang sering menjalar ke lengan, leher, atau rahang, diperburuk oleh aktivitas fisik dan mereda dengan istirahat atau nitrogliserin.
     """
+    
 
     # Tampilkan penjelasan dalam format markdown
     st.markdown(chest_pain_explanation)
+    # Penjelasan tentang Normal, ST, dan LVH
+    st.subheader("Penjelasan tentang Normal, ST, dan LVH dalam Prediksi Penyakit Jantung")
+
+    explanation = """
+    - **Normal**: Hasil EKG yang menunjukkan tidak ada kelainan, jantung berfungsi dengan normal.
+    - **ST (ST Segment Elevation/Depression)**:
+        - **ST Elevation**: Peningkatan segmen ST, bisa menunjukkan serangan jantung (infark miokard).
+        - **ST Depression**: Penurunan segmen ST, bisa mengindikasikan gangguan aliran darah ke jantung (iskemia).
+    - **LVH (Left Ventricular Hypertrophy)**: Pembesaran atau penebalan otot jantung pada ventrikel kiri, biasanya akibat hipertensi atau beban jantung yang tinggi.
+    """
+    st.write(explanation)
 
 # Menu Grafik
 elif selected == "Grafik":
